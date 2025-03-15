@@ -40,7 +40,10 @@ while IFS= read -r -d '' line; do
 
 
 	# J2ObjC libraries under the macosx folder are x86_64 only.
-	"$J2OBJCC" "-I${BUILD}" -c "$infile" -o "${mac_obj}" -target x86_64-apple-macos10.12 -isysroot "$MACOSX_ROOT" "$OBJCFLAGS"
+	"$J2OBJCC" "-I${BUILD}" -c "$infile" -o "${mac_obj}-x86_64" -target x86_64-apple-macos14 -isysroot "$MACOSX_ROOT" "$OBJCFLAGS"
+	"$J2OBJCC" "-I${BUILD}" -c "$infile" -o "${mac_obj}-arm64" -target arm64-apple-macos14 -isysroot "$MACOSX_ROOT" "$OBJCFLAGS"
+
+	"$LIPO" -create "${mac_obj}-"{x86_64,arm64} -output "$mac_obj"
 
 	
 done < <(cd "${BUILD}" ; find . -type f -name '*.m' -print0)
